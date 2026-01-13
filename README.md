@@ -1,8 +1,6 @@
 # Vitesse Theme for OpenCode
 
-Port of [Vitesse VS Code theme](https://github.com/antfu/vscode-theme-vitesse) by Anthony Fu. Carefully crafted colors for comfortable coding.
-
-## Preview
+Port of [Vitesse VS Code theme](https://github.com/antfu/vscode-theme-vitesse) by Anthony Fu
 
 <table>
   <tr>
@@ -27,13 +25,6 @@ Port of [Vitesse VS Code theme](https://github.com/antfu/vscode-theme-vitesse) b
     </td>
   </tr>
 </table>
-
-## Variants
-
-- **vitesse** - Auto-switching (system)
-- **vitesse-soft** - Auto-switching with softer backgrounds
-- **vitesse-dark** / **vitesse-dark-soft** / **vitesse-black**
-- **vitesse-light** / **vitesse-light-soft**
 
 ## Install
 
