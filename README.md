@@ -1,6 +1,6 @@
 # Vitesse Theme for OpenCode
 
-Port of [Vitesse VS Code theme](https://github.com/antfu/vscode-theme-vitesse) by Anthony Fu
+> Port of [Vitesse VS Code theme](https://github.com/antfu/vscode-theme-vitesse)
 
 <table>
   <tr>
