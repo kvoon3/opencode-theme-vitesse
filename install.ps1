@@ -22,7 +22,7 @@ while (-not $cloneSuccess -and $retryCount -lt $maxRetries) {
             Write-Host "🔄 Retry attempt $retryCount of $maxRetries..." -ForegroundColor Yellow
         }
         
-        git clone --depth 1 --filter=blob:none --sparse $REPO_URL $TEMP_DIR 2>&1 | Out-Null
+        $cloneOutput = git clone --depth 1 --filter=blob:none --sparse $REPO_URL $TEMP_DIR 2>&1
         if ($LASTEXITCODE -eq 0) {
             $cloneSuccess = $true
         } else {
@@ -38,6 +38,11 @@ while (-not $cloneSuccess -and $retryCount -lt $maxRetries) {
             Write-Host ""
             Write-Host "❌ Error: Failed to download theme files after $maxRetries attempts." -ForegroundColor Red
             Write-Host ""
+            if ($cloneOutput) {
+                Write-Host "Git error output:" -ForegroundColor Yellow
+                Write-Host $cloneOutput -ForegroundColor Red
+                Write-Host ""
+            }
             Write-Host "This could be due to:" -ForegroundColor Yellow
             Write-Host "  • Network connectivity issues"
             Write-Host "  • Git configuration problems"
