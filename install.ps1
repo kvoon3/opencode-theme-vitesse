@@ -10,15 +10,89 @@ Write-Host "📦 Installing Vitesse Theme for OpenCode..." -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $THEMES_DIR | Out-Null
 
 Write-Host "⬇️  Downloading theme files..." -ForegroundColor Yellow
-git clone --depth 1 --filter=blob:none --sparse $REPO_URL $TEMP_DIR
+
+# Try to clone with retries
+$maxRetries = 3
+$retryCount = 0
+$cloneSuccess = $false
+
+while (-not $cloneSuccess -and $retryCount -lt $maxRetries) {
+    try {
+        if ($retryCount -gt 0) {
+            Write-Host "🔄 Retry attempt $retryCount of $maxRetries..." -ForegroundColor Yellow
+        }
+        
+        $cloneOutput = git clone --depth 1 --filter=blob:none --sparse $REPO_URL $TEMP_DIR 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            $cloneSuccess = $true
+        } else {
+            throw "Git clone failed with exit code $LASTEXITCODE"
+        }
+    }
+    catch {
+        $retryCount++
+        if ($retryCount -lt $maxRetries) {
+            Write-Host "⚠️  Clone failed, retrying in 2 seconds..." -ForegroundColor Yellow
+            Start-Sleep -Seconds 2
+        } else {
+            Write-Host ""
+            Write-Host "❌ Error: Failed to download theme files after $maxRetries attempts." -ForegroundColor Red
+            Write-Host ""
+            if ($cloneOutput) {
+                Write-Host "Git error output:" -ForegroundColor Yellow
+                Write-Host $cloneOutput -ForegroundColor Red
+                Write-Host ""
+            }
+            Write-Host "This could be due to:" -ForegroundColor Yellow
+            Write-Host "  • Network connectivity issues"
+            Write-Host "  • Git configuration problems"
+            Write-Host "  • GitHub connection issues"
+            Write-Host ""
+            Write-Host "💡 Possible solutions:" -ForegroundColor Cyan
+            Write-Host "  1. Check your internet connection"
+            Write-Host "  2. Try increasing Git buffer size: git config --global http.postBuffer 524288000"
+            Write-Host "  3. Try using a VPN or different network"
+            Write-Host "  4. Manual installation: Download from https://github.com/kvoon3/opencode-theme-vitesse"
+            Write-Host ""
+            exit 1
+        }
+    }
+}
+
+if (-not (Test-Path $TEMP_DIR)) {
+    Write-Host "❌ Error: Temporary directory was not created." -ForegroundColor Red
+    exit 1
+}
+
 Set-Location $TEMP_DIR
 git sparse-checkout set themes
 
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "❌ Error: Failed to checkout theme files." -ForegroundColor Red
+    Set-Location $HOME
+    Remove-Item -Recurse -Force $TEMP_DIR -ErrorAction SilentlyContinue
+    exit 1
+}
+
 Write-Host "📋 Copying Vitesse theme files..." -ForegroundColor Yellow
-Copy-Item -Path "themes\vitesse*.json" -Destination $THEMES_DIR -Force
+
+try {
+    $themeFiles = Get-ChildItem -Path "themes\vitesse*.json" -ErrorAction Stop
+    if ($themeFiles.Count -eq 0) {
+        throw "No theme files found in themes directory"
+    }
+    Copy-Item -Path "themes\vitesse*.json" -Destination $THEMES_DIR -Force -ErrorAction Stop
+}
+catch {
+    Write-Host "❌ Error: Failed to copy theme files." -ForegroundColor Red
+    Write-Host "   $_" -ForegroundColor Red
+    Set-Location $HOME
+    Remove-Item -Recurse -Force $TEMP_DIR -ErrorAction SilentlyContinue
+    exit 1
+}
 
 Set-Location $HOME
-Remove-Item -Recurse -Force $TEMP_DIR
+Remove-Item -Recurse -Force $TEMP_DIR -ErrorAction SilentlyContinue
 
 Write-Host ""
 Write-Host "✅ Installation complete!" -ForegroundColor Green
