@@ -22,6 +22,21 @@
   </tr>
 </table>
 
+## Available themes
+
+**Dual**
+- `vitesse`: `vitesse-light` + `vitesse-dark`
+- `vitesse-soft`: `vitesse-light-soft` + `vitesse-dark-soft`
+
+**Light**
+- `vitesse-light`
+- `vitesse-light-soft`
+
+**Dark**
+- `vitesse-dark`
+- `vitesse-dark-soft`
+- `vitesse-black`
+
 ## Install
 
 **macOS / Linux**
@@ -35,6 +50,12 @@ irm https://raw.githubusercontent.com/kvoon3/opencode-theme-vitesse/main/install
 ```
 
 Restart OpenCode, then use `/theme` to activate.
+
+## Toggle light / dark
+
+Use `/appearance` to toggle between the dual light/dark themes.
+
+
 
 ## Credits
 
