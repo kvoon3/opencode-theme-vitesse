@@ -9,15 +9,11 @@
       <br>
       <sub><b>Vitesse Dark</b></sub>
     </td>
-  </tr>
-  <tr>
     <td align="center">
       <img src="./screenshots/vitesse-light.png" alt="Vitesse Light" width="100%">
       <br>
       <sub><b>Vitesse Light</b></sub>
     </td>
-  </tr>
-  <tr>
     <td align="center">
       <img src="./screenshots/vitesse-light-soft.png" alt="Vitesse Light Soft" width="100%">
       <br>
