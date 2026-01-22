@@ -49,13 +49,13 @@ curl -sL https://raw.githubusercontent.com/kvoon3/opencode-theme-vitesse/main/in
 irm https://raw.githubusercontent.com/kvoon3/opencode-theme-vitesse/main/install.ps1 | iex
 ```
 
+## Usage
+
 Restart OpenCode, then use `/theme` to activate.
 
 ## Toggle light / dark
 
 Use `/appearance` to toggle between the dual light/dark themes.
-
-
 
 ## Credits
 
