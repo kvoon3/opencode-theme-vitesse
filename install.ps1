@@ -11,25 +11,29 @@ New-Item -ItemType Directory -Force -Path $THEMES_DIR | Out-Null
 
 Write-Host "⬇️  Downloading theme files..." -ForegroundColor Yellow
 
-# Try to clone with retries
 $maxRetries = 3
 $retryCount = 0
 $cloneSuccess = $false
+$cloneOutput = $null
 
 while (-not $cloneSuccess -and $retryCount -lt $maxRetries) {
-    try {
-        if ($retryCount -gt 0) {
-            Write-Host "🔄 Retry attempt $retryCount of $maxRetries..." -ForegroundColor Yellow
-        }
-        
-        $cloneOutput = git clone --depth 1 --filter=blob:none --sparse $REPO_URL $TEMP_DIR 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            $cloneSuccess = $true
-        } else {
-            throw "Git clone failed with exit code $LASTEXITCODE"
-        }
+    if ($retryCount -gt 0) {
+        Write-Host "🔄 Retry attempt $retryCount of $maxRetries..." -ForegroundColor Yellow
     }
-    catch {
+
+    if (Test-Path $TEMP_DIR) {
+        Remove-Item -Recurse -Force $TEMP_DIR -ErrorAction Stop
+    }
+
+    $previousPreference = $ErrorActionPreference
+    $ErrorActionPreference = "SilentlyContinue"
+    $cloneOutput = & git clone --depth 1 --filter=blob:none --sparse $REPO_URL $TEMP_DIR 2>$null
+    $ErrorActionPreference = $previousPreference
+    $exitCode = $LASTEXITCODE
+
+    if ($exitCode -eq 0) {
+        $cloneSuccess = $true
+    } else {
         $retryCount++
         if ($retryCount -lt $maxRetries) {
             Write-Host "⚠️  Clone failed, retrying in 2 seconds..." -ForegroundColor Yellow
